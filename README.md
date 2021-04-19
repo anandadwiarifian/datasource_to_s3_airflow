@@ -1,10 +1,7 @@
 # datasource_to_s3_airflow
-Simulation of filtering and data pulling by date range from a data source to S3 bucket, scheduled by airflow
+The project simulates the flow of retail sales data from an online shop, filtered by date range, then pushed to S3 bucket.
 
-The project simulates retail sales data from an online shop to S3 bucket.
-The data being pulled are filtered first, based on the data range.
-
-I use docker services to create 2 containers: airflow and postgres
+I use docker to create 2 containers: airflow and postgres
 
 Airflow is used to schedule the process.
 Postgres is used to act as the data source of the retail sales data.
