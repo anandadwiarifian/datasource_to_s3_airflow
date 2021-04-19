@@ -7,7 +7,7 @@ Airflow is used to schedule the process.
 Postgres is used to act as the data source of the retail sales data.
 
 AWS account is needed to run this repo. 
-Get your AWS access key and secret key by `clicking on your name -> My Security Credentials`
+Get your AWS access key and secret key by `clicking on your name -> My Security Credentials` in the AWS website.
 
 ## How to use
 First, run the containers by `cd`-ing to the project file and running this code.
@@ -20,7 +20,7 @@ The docker should be up and running now. Then, create a postgres connection usin
 
 Note that the port, username, and database name match with the ones in [docker-compose.yml](/docker-compose.yml), for postgres container.
 
-Next, create a scheme: retail, table: user_purchase, and import the data from `/setup/raw_input_data/retail/OnlineRetail.csv` 
+Next, create a scheme: retail, table: user_purchase, and import the data from `setup/raw_input_data/retail/OnlineRetail.csv` 
 
 Or just execute the [sql script](/setup/postgres/create_user_purchase.sql) by running this code in the `pg` session.
 
