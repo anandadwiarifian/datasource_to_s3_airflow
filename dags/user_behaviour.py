@@ -14,7 +14,7 @@ unload_user_purchase ='./scripts/sql/filter_unload_user_purchase.sql'
 temp_filtered_user_purchase = '/temp/temp_filtered_user_purchase.csv'
 
 # remote config
-BUCKET_NAME = 'learn-de-simple'
+BUCKET_NAME = 'learn-de-simple' # change it to your S3 bucket name
 temp_filtered_user_purchase_key= 'user_purchase/stage/{{ ds }}/temp_filtered_user_purchase.csv'
 
 
@@ -35,7 +35,7 @@ def remove_local_file(filelocation):
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
-    "start_date": datetime(2010, 12, 1),
+    "start_date": datetime(2010, 12, 1),  # the start date of the DAG. This will be used as an argument to the sql script as a macro variable ds
     "email": ["airflow@airflow.com"],
     "email_on_failure": False,
     "email_on_retry": False,
@@ -48,7 +48,9 @@ dag = DAG("user_behaviour", default_args=default_args,
 
 end_of_data_pipeline = DummyOperator(task_id='end_of_data_pipeline', dag=dag)
 
-pg_unload = PostgresOperator(
+# below is the step to filter the data from the data source by executing the sql script which referenced by unload_user_purchase. 
+# the filtered data is saved as a csv in temp_filtered_user_purchase.
+pg_unload = PostgresOperator( 
     dag=dag,
     task_id='pg_unload',
     sql=unload_user_purchase,
@@ -58,6 +60,7 @@ pg_unload = PostgresOperator(
     wait_for_downstream=True
 )
 
+# the filtered data then are pushed to S3 using the local_to_s3 function
 user_purchase_to_s3_stage = PythonOperator(
     dag=dag,
     task_id='user_purchase_to_s3_stage',
@@ -68,6 +71,7 @@ user_purchase_to_s3_stage = PythonOperator(
     },
 )
 
+# delete the csv of filtered data in the local drive
 remove_local_user_purchase_file = PythonOperator(
     dag=dag,
     task_id='remove_local_user_purchase_file',
@@ -77,4 +81,5 @@ remove_local_user_purchase_file = PythonOperator(
     },
 )
 
+# this is the flow of the DAG
 pg_unload >> user_purchase_to_s3_stage >> remove_local_user_purchase_file >> end_of_data_pipeline
