@@ -48,7 +48,9 @@ After the data successfully psuhed to S3 bucket, the csv is deleted from the loc
 
 The final task that doesn't do anything (dummy task)
 
-Before you run, in the airflow GUI, `Admin -> Connections` then add `{"aws_access_key_id":"your_access_key", "aws_secret_access_key": "your_secret_ccess_key"}` in `Extra` field in `aws_default` connection.
+Before you turn on the DAG, in the airflow GUI, `Admin -> Connections` then add `{"aws_access_key_id":"your_access_key", "aws_secret_access_key": "your_secret_ccess_key"}` in `Extra` field in `aws_default` connection.
+There's a better and more secure way to give the AWS credentials to Airflow, though. I will add it in the next repo.
+
 
 The screenshot of the airflow GUI:
 ![Stage 1 Graph View](https://user-images.githubusercontent.com/47022822/115257772-9c84a780-a15a-11eb-8e9a-dfbc65dc55b7.PNG)
