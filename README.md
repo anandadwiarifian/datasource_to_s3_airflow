@@ -7,16 +7,21 @@ Airflow is used to schedule the process.
 Postgres is used to act as the data source of the retail sales data.
 
 ## How to use
-First, run the containers by running this code.
-`docker-compose -f docker-compose-LocalExecutor.yml up -d`
+First, run the containers by `cd`-ing to the project file and running this code.
 
-The docker should be up and running now. Then, create a postgres connection using pgcli
+`docker-compose -f docker-compose.yml up -d`
+
+The docker should be up and running now. Then, create a postgres connection using pgcli.
+
 `pgcli -h localhost -p 5432 -U airflow -d airflow`
+
 Note that the port, username, and database name match with the ones in [docker-compose.yml](datasource_to_s3_airflow/docker-compose.yml), for postgres container.
 
 Next, create a scheme: retail, table: user_purchase, and import the data from `/setup/raw_input_data/retail/OnlineRetail.csv` 
+
 Or just execute the [sql script](datasource_to_s3_airflow/setup/postgres/create_user_purchase.sql) by running this code in the `pg` session.
-`\i ~/beginner_de_project/setup/postgres/create_user_purchase.sql`
+
+`\i setup/postgres/create_user_purchase.sql`
 
 The pg table are now ready to act as the data source.
 
@@ -24,13 +29,20 @@ The pg table are now ready to act as the data source.
 You can see the script for the DAG with comments [here](datasource_to_s3_airflow/dags/user_behaviour.py).
 Overall, the flow is like this
 - pg_unload:
+
 The data in the data source is filtered based on the execution of the script (for this project, the date is set to 2010-12-01) by running this sql [script](datasource_to_s3_airflow/scripts/sql/filter_unload_user_purchase.sql). The `{{ }}` variables are airflow macro variables that are set in the dag file.
 The filtered data is saved to local drive in a csv.
+
 - user_purchase_to_s3_stage:
+
 The data in the csv file then pushed to S3 bucket
+
 - remove_local_user_purchase_file:
+
 After the data successfully psuhed to S3 bucket, the csv is deleted from the local drive.
+
 - end_of_data_pipeline:
+
 The final task that doesn't do anything (dummy task)
 
 The screenshot of the airflow GUI:
