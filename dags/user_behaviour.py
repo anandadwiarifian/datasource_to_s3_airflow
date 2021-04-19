@@ -15,7 +15,7 @@ temp_filtered_user_purchase = '/temp/temp_filtered_user_purchase.csv'
 
 # remote config
 BUCKET_NAME = 'learn-de-simple' # change it to your S3 bucket name
-temp_filtered_user_purchase_key= 'user_purchase/stage/{{ ds }}/temp_filtered_user_purchase.csv'
+temp_filtered_user_purchase_key= 'user_purchase/stage/{{ ds }}/temp_filtered_user_purchase.csv' 
 
 
 # helper function(s)
@@ -43,9 +43,11 @@ default_args = {
     "retry_delay": timedelta(minutes=5)
 }
 
+# below initialize a DAG named user_behaviour with default_arg above, schedule interval = 0 0 * * * (0 minute 0 hour), and max active runs = 1 to prevent overlapping runs
 dag = DAG("user_behaviour", default_args=default_args,
           schedule_interval="0 0 * * *", max_active_runs=1)
 
+# dummy task
 end_of_data_pipeline = DummyOperator(task_id='end_of_data_pipeline', dag=dag)
 
 # below is the step to filter the data from the data source by executing the sql script which referenced by unload_user_purchase. 
@@ -66,8 +68,8 @@ user_purchase_to_s3_stage = PythonOperator(
     task_id='user_purchase_to_s3_stage',
     python_callable=_local_to_s3,
     op_kwargs={
-        'filename': temp_filtered_user_purchase,
-        'key': temp_filtered_user_purchase_key,
+        'filename': temp_filtered_user_purchase, # the csv of filtered data
+        'key': temp_filtered_user_purchase_key, # the directory of the filtered data in the S3 bucket
     },
 )
 
