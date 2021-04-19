@@ -15,22 +15,22 @@ The docker should be up and running now. Then, create a postgres connection usin
 
 `pgcli -h localhost -p 5432 -U airflow -d airflow`
 
-Note that the port, username, and database name match with the ones in [docker-compose.yml](datasource_to_s3_airflow/docker-compose.yml), for postgres container.
+Note that the port, username, and database name match with the ones in [docker-compose.yml](/docker-compose.yml), for postgres container.
 
 Next, create a scheme: retail, table: user_purchase, and import the data from `/setup/raw_input_data/retail/OnlineRetail.csv` 
 
-Or just execute the [sql script](datasource_to_s3_airflow/setup/postgres/create_user_purchase.sql) by running this code in the `pg` session.
+Or just execute the [sql script](/setup/postgres/create_user_purchase.sql) by running this code in the `pg` session.
 
 `\i setup/postgres/create_user_purchase.sql`
 
 The pg table are now ready to act as the data source.
 
 ### Airflow
-You can see the script for the DAG with comments [here](datasource_to_s3_airflow/dags/user_behaviour.py).
+You can see the script for the DAG with comments [here](/dags/user_behaviour.py).
 Overall, the flow is like this
 - pg_unload:
 
-The data in the data source is filtered based on the execution of the script (for this project, the date is set to 2010-12-01) by running this sql [script](datasource_to_s3_airflow/scripts/sql/filter_unload_user_purchase.sql). The `{{ }}` variables are airflow macro variables that are set in the dag file.
+The data in the data source is filtered based on the execution of the script (for this project, the date is set to 2010-12-01) by running this sql [script](/scripts/sql/filter_unload_user_purchase.sql). The `{{ }}` variables are airflow macro variables that are set in the dag file.
 The filtered data is saved to local drive in a csv.
 
 - user_purchase_to_s3_stage:
